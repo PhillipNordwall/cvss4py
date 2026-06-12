@@ -77,7 +77,7 @@ def score_vector(vector, validate_vector=True, warn_modified=True, replace_defau
     for i in [1, 2, 4, 5]:
         eq_d['eq' + str(i)] = eq_c[i-1]
 
-    #print("Macrovector: ", eq_c)
+    print("Macrovector: ", eq_c)
     
     base_score = score_eq_class(eq_c) 
     next_lowers = next_lower_eq_classes(eq_c)
@@ -85,9 +85,9 @@ def score_vector(vector, validate_vector=True, warn_modified=True, replace_defau
     score_differences =  {eq:base_score-eq_s if eq_s is not None else None for (eq, eq_s) in next_lower_scores.items()}
     
 
-    #print("Base Score: ", base_score)
-    #print("Next Lowers: ", next_lowers)
-    #print("Next lower scores: ", next_lower_scores)
+    print("Base Score: ", base_score)
+    print("Next Lowers: ", next_lowers)
+    print("Next lower scores: ", next_lower_scores)
 
     maxes_lists = []
     for eq in next_lowers:
@@ -99,7 +99,7 @@ def score_vector(vector, validate_vector=True, warn_modified=True, replace_defau
         if not any([d < 0 for d in distances.values()]):
             break
     
-    #print("Distances: ", distances)
+    print("Distances: ", distances)
 
     eq_severity_distance = {}
     for eq in eq_d:
@@ -107,17 +107,17 @@ def score_vector(vector, validate_vector=True, warn_modified=True, replace_defau
         for metric in eq_class_metrics[eq]:
             eq_severity_distance[eq] += distances[metric]
     
-    #print("eq_severity_distance ", eq_severity_distance)
+    print("eq_severity_distance ", eq_severity_distance)
     max_dists = {eq:eq_class_max_distance[eq][eq_d[eq]] for eq in eq_d}
-    #print("max_dists", max_dists)
+    print("max_dists", max_dists)
 
-    #print("Available Distance", score_differences)
+    print("Available Distance", score_differences)
 
     perc_eq_severity_distance = {}
     for eq,d in eq_severity_distance.items():
         perc_eq_severity_distance[eq] = d/max_dists[eq]
 
-    #print("Perc_eq_severity_dist", perc_eq_severity_distance)
+    print("Perc_eq_severity_dist", perc_eq_severity_distance)
 
     adjustments = {}
     for eq,p in perc_eq_severity_distance.items():
@@ -126,7 +126,7 @@ def score_vector(vector, validate_vector=True, warn_modified=True, replace_defau
         else:
             adjustments[eq] = None
 
-    #print("Adjustments: ", adjustments)
+    print("Adjustments: ", adjustments)
 
     adjustments_to_mean = [a for a in adjustments.values() if a is not None]
     if len(adjustments_to_mean) == 0:
@@ -134,7 +134,7 @@ def score_vector(vector, validate_vector=True, warn_modified=True, replace_defau
     else:
         total_adjustment = mean(adjustments_to_mean)
 
-    #print("Total Adjustments: ", total_adjustment)
+    print("Total Adjustments: ", total_adjustment)
     # Has to do with banker rounding (ROUND_EVEN) vs school rounding ROUND_HALF_UP
     return float(Decimal(base_score-total_adjustment).quantize(Decimal('.1'), rounding=ROUND_HALF_UP))
     
